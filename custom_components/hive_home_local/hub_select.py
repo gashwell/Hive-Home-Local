@@ -1,0 +1,137 @@
+"""Select platform for Hive Local Thermostat."""  # noqa: A005
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from homeassistant.components.select import SelectEntity, SelectEntityDescription
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
+
+from .common import HiveConfigEntry
+from .const import (
+    DOMAIN,
+    MODEL_OTR1,
+    MODEL_SLR1,
+)
+from .hub_coordinator import HiveHubCoordinator
+from .entity import HiveEntity, HiveEntityDescription
+
+
+@dataclass(frozen=True, kw_only=True)
+class HiveSelectEntityDescription(
+    HiveEntityDescription,
+    SelectEntityDescription,
+):
+    """Class describing Hive sensor entities."""
+
+    show_schedule_mode: bool = True
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,  # noqa: ARG001
+    config_entry: HiveConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the sensor platform."""
+
+    coordinator = config_entry.runtime_data.coordinator
+
+    if coordinator.model in [MODEL_SLR1, MODEL_OTR1]:
+        return
+
+    if coordinator.show_water_schedule_mode:
+        water_modes = ["auto", "heat", "off", "boost"]
+    else:
+        water_modes = ["heat", "off", "boost"]
+
+    entity_descriptions = (
+        HiveSelectEntityDescription(
+            key="system_mode_water",
+            translation_key="system_mode_water",
+            name=config_entry.title,
+            options=water_modes,
+        ),
+    )
+
+    _entities = [
+        HiveSelect(
+            entity_description=entity_description,
+            coordinator=coordinator,
+        )
+        for entity_description in entity_descriptions
+    ]
+
+    async_add_entities(sensorEntity for sensorEntity in _entities)
+
+
+class HiveSelect(HiveEntity, SelectEntity, RestoreEntity):
+    """hive_home_local Select class."""
+
+    entity_description: HiveSelectEntityDescription
+
+    def __init__(
+        self,
+        entity_description: HiveSelectEntityDescription,
+        coordinator: HiveHubCoordinator,
+    ) -> None:
+        """Initialize the sensor class."""
+
+        self.entity_description = entity_description
+        self._attr_unique_id = (
+            f"{DOMAIN}_{entity_description.name}_{entity_description.key}".lower()
+        )
+        self._attr_has_entity_name = True
+        self._attr_current_option = None
+        if entity_description.options:
+            self._attr_options = entity_description.options
+
+        super().__init__(entity_description, coordinator)
+
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        new_value = self.coordinator.water_mode
+
+        if new_value not in self.options:
+            msg = f"Invalid option for {self.entity_id}: {new_value}"
+            raise ValueError(msg)
+
+        self._attr_current_option = new_value
+        self.async_write_ha_state()
+
+    @property
+    def options(self) -> list[str]:
+        """Return the list of possible options."""
+        return self._attr_options
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the currently selected option."""
+        return self._attr_current_option
+
+    async def async_added_to_hass(self) -> None:
+        """Restore last state when added."""
+        await super().async_added_to_hass()
+
+        last_state = await self.async_get_last_state()
+        if last_state:
+            self._attr_current_option = last_state.state
+
+    async def async_select_option(self, option: str) -> None:
+        """Update the current selected option."""
+        if option not in self.options:
+            msg = f"Invalid option for {self.entity_id}: {option}"
+            raise ValueError(msg)
+
+        if option == "auto":
+            await self.coordinator.async_water_scheduled()
+        elif option == "heat":
+            await self.coordinator.async_water_always_on()
+        elif option == "boost":
+            await self.coordinator.async_water_boost()
+        elif option == "off":
+            await self.coordinator.async_water_always_off()
+
+        self._attr_current_option = option
+        self.async_write_ha_state()

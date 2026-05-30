@@ -1,0 +1,184 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Hive Home Local",
+        "description": "Select the type of Hive device to add.",
+        "menu_options": {
+          "hub": "Heating Hub (SLR1 / SLR2 / OTR1)",
+          "trv": "Radiator Valve (UK7004240 / TRV001)"
+        }
+      },
+      "hub": {
+        "title": "Hive Heating Hub",
+        "description": "Enter the Zigbee2MQTT MQTT topic and model for your Hive hub.",
+        "data": {
+          "mqtt_topic": "MQTT Topic",
+          "model": "Model",
+          "show_heat_schedule_mode": "Show Schedule mode for heating",
+          "show_water_schedule_mode": "Show Schedule mode for hot water"
+        },
+        "data_description": {
+          "mqtt_topic": "The Zigbee2MQTT MQTT topic for your Hive hub device (e.g. zigbee2mqtt/Hive Hub)."
+        }
+      },
+      "trv": {
+        "title": "Hive Radiator Valves",
+        "description": "TRVs are discovered automatically from Zigbee2MQTT.",
+        "data": {
+          "z2m_base_topic": "Zigbee2MQTT base topic",
+          "boiler_entity": "Boiler / receiver entity (optional)",
+          "person_entities": "People to track for geofencing (optional)"
+        },
+        "data_description": {
+          "z2m_base_topic": "The base_topic setting in your Zigbee2MQTT config. Default: zigbee2mqtt",
+          "boiler_entity": "HA entity to turn on/off when TRVs call for heat.",
+          "person_entities": "When all selected people leave home, frost protection activates automatically."
+        }
+      }
+    },
+    "error": {
+      "mqtt_not_configured": "MQTT integration is not configured."
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "hub_options": {
+        "title": "Hub Options",
+        "data": {
+          "mqtt_topic": "MQTT Topic",
+          "model": "Model",
+          "show_heat_schedule_mode": "Show Schedule mode for heating",
+          "show_water_schedule_mode": "Show Schedule mode for hot water"
+        }
+      },
+      "trv_options": {
+        "title": "TRV Options",
+        "data": {
+          "boiler_entity": "Boiler / receiver entity",
+          "person_entities": "People to track for geofencing"
+        }
+      }
+    }
+  },
+  "selector": {
+    "model": {
+      "options": {
+        "OTR1": "OTR1 — Thermostat Receiver",
+        "SLR1": "SLR1 — Single Channel Receiver",
+        "SLR2": "SLR2 — Dual Channel Receiver (heating + hot water)"
+      }
+    }
+  },
+  "services": {
+    "boost_heating": {
+      "name": "Boost Heating",
+      "description": "Start a timed heating boost on a hub device.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry",
+          "description": "The hub config entry to boost."
+        },
+        "minutes_to_boost": {
+          "name": "Duration (minutes)",
+          "description": "How long to boost heating. Uses default if omitted."
+        },
+        "temperature_to_boost": {
+          "name": "Temperature (°C)",
+          "description": "Target temperature during boost. Uses default if omitted."
+        }
+      }
+    },
+    "cancel_boost_heating": {
+      "name": "Cancel Heating Boost",
+      "description": "Cancel an active heating boost on a hub device.",
+      "fields": {
+        "config_entry_id": { "name": "Config Entry", "description": "The hub config entry." }
+      }
+    },
+    "boost_water": {
+      "name": "Boost Hot Water",
+      "description": "Start a timed hot water boost (SLR2 only).",
+      "fields": {
+        "config_entry_id": { "name": "Config Entry", "description": "The hub config entry." },
+        "minutes_to_boost": { "name": "Duration (minutes)", "description": "How long to boost hot water." }
+      }
+    },
+    "cancel_boost_water": {
+      "name": "Cancel Hot Water Boost",
+      "description": "Cancel an active hot water boost.",
+      "fields": {
+        "config_entry_id": { "name": "Config Entry", "description": "The hub config entry." }
+      }
+    },
+    "boost_trv": {
+      "name": "Boost TRV",
+      "description": "Start a timed boost on a TRV or room group.",
+      "fields": {
+        "entity_id": { "name": "TRV or Room", "description": "Climate entity to boost." },
+        "temperature": { "name": "Temperature (°C)", "description": "Boost temperature. Uses stored default if omitted." },
+        "duration": { "name": "Duration (minutes)", "description": "Boost duration. Uses stored default if omitted." }
+      }
+    },
+    "end_boost_trv": {
+      "name": "End TRV Boost",
+      "description": "Cancel an active boost on a TRV or room group.",
+      "fields": {
+        "entity_id": { "name": "TRV or Room", "description": "Climate entity to cancel boost on." }
+      }
+    },
+    "set_trv_schedule": {
+      "name": "Set TRV Schedule",
+      "description": "Set a weekly heating schedule for a TRV or room group.",
+      "fields": {
+        "entity_id": { "name": "TRV or Room", "description": "Climate entity." },
+        "schedule": { "name": "Schedule", "description": "List of {days, time, temperature} slots." }
+      }
+    },
+    "clear_trv_schedule": {
+      "name": "Clear TRV Schedule",
+      "description": "Remove the heating schedule from a TRV or room group.",
+      "fields": {
+        "entity_id": { "name": "TRV or Room", "description": "Climate entity." }
+      }
+    },
+    "advance_trv_schedule": {
+      "name": "Advance TRV Schedule",
+      "description": "Skip to the next scheduled slot immediately.",
+      "fields": {
+        "entity_id": { "name": "TRV or Room", "description": "Climate entity." }
+      }
+    },
+    "set_holiday": {
+      "name": "Set Holiday",
+      "description": "Activate frost protection for a date range. All TRVs restore automatically on return.",
+      "fields": {
+        "departure": { "name": "Departure", "description": "ISO 8601 departure datetime." },
+        "return":    { "name": "Return", "description": "ISO 8601 return datetime." }
+      }
+    },
+    "cancel_holiday": {
+      "name": "Cancel Holiday",
+      "description": "Cancel an active or pending holiday and restore all TRV modes."
+    },
+    "add_room": {
+      "name": "Add Room Group",
+      "description": "Create a virtual room group that controls multiple TRVs together.",
+      "fields": {
+        "room_name": { "name": "Room Name", "description": "Display name for the room." },
+        "trv_entity_ids": { "name": "TRVs", "description": "Zigbee2MQTT friendly names of TRVs in this room." },
+        "temp_sensor_entity_ids": { "name": "Temperature Sensors", "description": "Optional additional HA temperature sensors to include in the average." }
+      }
+    },
+    "remove_room": {
+      "name": "Remove Room Group",
+      "description": "Remove a room group. Individual TRV entities are not affected.",
+      "fields": {
+        "room_name": { "name": "Room Name", "description": "Name of the room group to remove." }
+      }
+    }
+  }
+}
