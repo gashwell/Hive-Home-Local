@@ -1,3 +1,7 @@
+# Derived from HA-Hive-Local-Thermostat by @andrew-codechimp
+# https://github.com/andrew-codechimp/HA-Hive-Local-Thermostat (MIT)
+# Adapted for Hive Home Local: domain renamed, class prefixes updated.
+
 """Select platform for Hive Local Thermostat."""  # noqa: A005
 
 from __future__ import annotations
