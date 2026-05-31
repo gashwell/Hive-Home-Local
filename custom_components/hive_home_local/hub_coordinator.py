@@ -1,3 +1,18 @@
+# Hub coordinator for Hive Home Local
+#
+# ATTRIBUTION: This file is derived from coordinator.py in the
+# HA-Hive-Local-Thermostat project by Andrew Codechimp (@andrew-codechimp).
+# Source: https://github.com/andrew-codechimp/HA-Hive-Local-Thermostat
+# License: MIT
+#
+# Modifications for Hive Home Local:
+#   - Domain renamed to hive_home_local
+#   - Class renamed HiveCoordinator to HiveHubCoordinator
+#   - Import paths updated for unified project structure
+#
+# All MQTT protocol logic, boost handling, hot water support and
+# diagnostics for SLR1/SLR2/OTR1 devices are the work of @andrew-codechimp.
+
 """Coordinator for Hive Local Thermostat integration."""
 
 from __future__ import annotations
