@@ -1,0 +1,63 @@
+Hive Home Local
+===============
+
+This project incorporates code from the following open source projects:
+
+HA-Hive-Local-Thermostat
+------------------------
+Source:  https://github.com/andrew-codechimp/HA-Hive-Local-Thermostat
+Author:  Andrew Codechimp (@andrew-codechimp)
+License: MIT
+
+The following files in custom_components/hive_home_local/ are derived from
+HA-Hive-Local-Thermostat with modifications to integrate with the unified
+domain and device-family architecture of this project:
+
+  hub_coordinator.py  (from coordinator.py)
+  hub_climate.py      (from climate.py)
+  hub_entity.py       (from entity.py)
+  hub_binary_sensor.py (from binary_sensor.py)
+  hub_sensor.py       (from sensor.py)
+  hub_number.py       (from number.py)
+  hub_select.py       (from select.py)
+  hub_button.py       (from button.py)
+  common.py
+  diagnostics.py
+
+Modifications made:
+  - Domain renamed from hive_local_thermostat to hive_home_local
+  - Class names prefixed with HiveHub* to avoid collisions with TRV classes
+  - Import paths updated to reference hub_coordinator and hub_entity
+  - Integration with shared const.py and config_flow.py
+
+All hub device logic (SLR1, SLR2, OTR1 MQTT protocol handling, boost,
+hot water control, diagnostics) is the work of @andrew-codechimp.
+
+
+Hive-TRV-Local
+--------------
+Source:  https://github.com/gashwell/Hive-TRV-Local
+Author:  Gary Ashwell (@gashwell)
+License: MIT
+
+The following files are derived from Hive-TRV-Local:
+
+  trv_coordinator.py  (from coordinator.py)
+  trv_climate.py      (from climate.py)
+  trv_storage.py      (from storage.py)
+  trv_schedule.py     (from schedule.py)
+  trv_holiday.py      (from holiday.py)
+  trv_presence.py     (from presence.py)
+  trv_room.py         (from room.py)
+  trv_sensor.py       (from sensor.py)
+  trv_button.py       (from button.py)
+  trv_number.py       (from number.py)
+  trv_select.py       (from select.py)
+
+
+Brand Assets
+------------
+The icon.png, icon@2x.png, logo.png, and logo@2x.png images are sourced from
+the Home Assistant brands repository:
+  https://github.com/home-assistant/brands
+under the assets for the hive_local_thermostat integration.
