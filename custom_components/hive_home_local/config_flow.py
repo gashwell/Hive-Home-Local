@@ -1,14 +1,9 @@
 """Config flow for Hive Home Local.
 
-Initial setup is kept minimal — just enough to identify the connection.
+Initial setup is kept minimal - just enough to identify the connection.
 All device-specific settings (MQTT topics, boiler entity, persons) are
 configured via the Configure button after the integration is installed.
-
-Device families:
-  Hub  — SLR1 / SLR2 / OTR1 heating and hot water receivers
-  TRV  — UK7004240 / TRV001 radiator valves (auto-discovered via Z2M)
 """
-
 from __future__ import annotations
 
 from typing import Any
@@ -36,7 +31,7 @@ from .const import (
 
 
 class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Minimal config flow — connection details only.
+    """Minimal config flow - connection details only.
 
     All device configuration is done after install via the Configure button.
     """
@@ -55,12 +50,10 @@ class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
             },
         )
 
-    # ── Hub setup ─────────────────────────────────────────────────────
-
     async def async_step_hub(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Hub setup — model only. MQTT topic added via Configure afterward."""
+        """Hub setup - model only. MQTT topic added via Configure afterward."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
@@ -72,8 +65,6 @@ class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
                 data={
                     CONF_DEVICE_FAMILY: FAMILY_HUB,
                     CONF_MODEL: model,
-                    # MQTT topic is blank until configured — hub coordinator
-                    # handles an empty topic gracefully (logs a warning, waits)
                     CONF_MQTT_TOPIC: "",
                     CONF_SHOW_HEAT_SCHEDULE_MODE: False,
                     CONF_SHOW_WATER_SCHEDULE_MODE: False,
@@ -93,21 +84,13 @@ class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
                     ),
                 }
             ),
-            description_placeholders={
-                "note": (
-                    "Select your hub model. You will add the MQTT topic "
-                    "and other settings via the Configure button after install."
-                )
-            },
             errors=errors,
         )
-
-    # ── TRV setup ──────────────────────────────────────────────────────
 
     async def async_step_trv(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """TRV setup — Z2M base topic only. TRVs auto-discover after install."""
+        """TRV setup - Z2M base topic only. TRVs auto-discover after install."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
@@ -119,7 +102,6 @@ class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
                 data={
                     CONF_DEVICE_FAMILY: FAMILY_TRV,
                     CONF_Z2M_BASE_TOPIC: base,
-                    # Boiler and persons are empty — configure after install
                     CONF_BOILER_ENTITY: None,
                     CONF_PERSON_ENTITIES: [],
                 },
@@ -136,27 +118,18 @@ class HiveHomeLocalConfigFlow(ConfigFlow, domain=DOMAIN):
                     ),
                 }
             ),
-            description_placeholders={
-                "note": (
-                    "TRVs are discovered automatically once the integration "
-                    "is running. Use Configure to add a boiler entity or "
-                    "geofencing persons at any time."
-                )
-            },
             errors=errors,
         )
 
-    # ── Options flow ───────────────────────────────────────────────────
-
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry) -> HiveHomeLocalOptionsFlow:
+    def async_get_options_flow(config_entry) -> "HiveHomeLocalOptionsFlow":
         """Return the options flow."""
         return HiveHomeLocalOptionsFlow(config_entry)
 
 
 class HiveHomeLocalOptionsFlow(OptionsFlow):
-    """Options flow — full device configuration, available any time after install."""
+    """Options flow - full device configuration, available any time after install."""
 
     def __init__(self, config_entry) -> None:
         """Initialise."""
@@ -171,8 +144,6 @@ class HiveHomeLocalOptionsFlow(OptionsFlow):
             return await self.async_step_trv_options(user_input)
         return await self.async_step_hub_options(user_input)
 
-    # ── Hub options ────────────────────────────────────────────────────
-
     async def async_step_hub_options(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -180,7 +151,6 @@ class HiveHomeLocalOptionsFlow(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        # Prefer options over original data so re-configure shows latest values
         opts = self._entry.options
         data = self._entry.data
 
@@ -223,8 +193,6 @@ class HiveHomeLocalOptionsFlow(OptionsFlow):
                 }
             ),
         )
-
-    # ── TRV options ────────────────────────────────────────────────────
 
     async def async_step_trv_options(
         self, user_input: dict[str, Any] | None = None
