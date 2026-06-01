@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Hive Home Local",
+        "description": "Select the type of Hive device to add.",
+        "menu_options": {
+          "hub": "Heating Hub (SLR1 / SLR2 / OTR1)",
+          "trv": "Radiator Valves (UK7004240 / TRV001)"
+        }
+      },
+      "hub": {
+        "title": "Hive Heating Hub",
+        "description": "Select your hub model. After install use Configure to set the MQTT topic and other settings.",
+        "data": {
+          "model": "Hub model"
+        }
+      },
+      "trv": {
+        "title": "Hive Radiator Valves",
+        "description": "Enter your Zigbee2MQTT base topic. TRVs are discovered automatically. Use Configure afterwards to add a boiler entity or geofencing.",
+        "data": {
+          "z2m_base_topic": "Zigbee2MQTT base topic"
+        },
+        "data_description": {
+          "z2m_base_topic": "Must match base_topic in your Zigbee2MQTT configuration (default: zigbee2mqtt)"
+        }
+      }
+    },
+    "error": {
+      "mqtt_unavailable": "MQTT integration is not configured in Home Assistant."
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "hub_options": {
+        "title": "Configure Hive Hub",
+        "description": "Set the MQTT topic for your hub and adjust other settings.",
+        "data": {
+          "mqtt_topic": "MQTT Topic",
+          "model": "Model",
+          "show_heat_schedule_mode": "Show Schedule mode for heating",
+          "show_water_schedule_mode": "Show Schedule mode for hot water"
+        },
+        "data_description": {
+          "mqtt_topic": "The Zigbee2MQTT MQTT topic for your hub device (e.g. zigbee2mqtt/Hive Hub)."
+        }
+      },
+      "trv_options": {
+        "title": "Configure Hive TRVs",
+        "description": "Optionally configure a boiler entity and geofencing persons.",
+        "data": {
+          "boiler_entity": "Boiler / receiver entity",
+          "person_entities": "People to track for geofencing"
+        },
+        "data_description": {
+          "boiler_entity": "Turned on or off based on TRV heat demand. Supports climate, switch, and input_boolean.",
+          "person_entities": "When all selected people leave home, frost protection activates automatically."
+        }
+      }
+    }
+  },
+  "selector": {
+    "model": {
+      "options": {
+        "OTR1": "OTR1 - Thermostat Receiver",
+        "SLR1": "SLR1 - Single Channel Receiver",
+        "SLR2": "SLR2 - Dual Channel Receiver (heating and hot water)"
+      }
+    }
+  }
+}
