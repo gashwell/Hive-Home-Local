@@ -1,15 +1,11 @@
 {
   "domain": "hive_home_local",
   "name": "Hive Home Local",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "documentation": "https://github.com/gashwell/Hive-Home-Local",
   "issue_tracker": "https://github.com/gashwell/Hive-Home-Local/issues",
-  "dependencies": [
-    "mqtt"
-  ],
-  "codeowners": [
-    "@gashwell"
-  ],
+  "dependencies": ["mqtt"],
+  "codeowners": ["@gashwell"],
   "requirements": [],
   "iot_class": "local_push",
   "integration_type": "hub",
