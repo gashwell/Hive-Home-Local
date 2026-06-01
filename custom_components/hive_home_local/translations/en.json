@@ -23,12 +23,12 @@
           "z2m_base_topic": "Zigbee2MQTT base topic"
         },
         "data_description": {
-          "z2m_base_topic": "Matches base_topic in your Zigbee2MQTT config. Default: zigbee2mqtt"
+          "z2m_base_topic": "Must match base_topic in your Zigbee2MQTT configuration (default: zigbee2mqtt)"
         }
       }
     },
     "error": {
-      "mqtt_unavailable": "MQTT integration is not configured."
+      "mqtt_unavailable": "MQTT integration is not configured in Home Assistant."
     },
     "abort": {
       "already_configured": "This device is already configured."
@@ -38,6 +38,7 @@
     "step": {
       "hub_options": {
         "title": "Configure Hive Hub",
+        "description": "Set the MQTT topic for your hub and adjust other settings.",
         "data": {
           "mqtt_topic": "MQTT Topic",
           "model": "Model",
@@ -45,18 +46,19 @@
           "show_water_schedule_mode": "Show Schedule mode for hot water"
         },
         "data_description": {
-          "mqtt_topic": "The Zigbee2MQTT MQTT topic for your hub (e.g. zigbee2mqtt/Hive Hub)."
+          "mqtt_topic": "The Zigbee2MQTT MQTT topic for your hub device (e.g. zigbee2mqtt/Hive Hub)."
         }
       },
       "trv_options": {
         "title": "Configure Hive TRVs",
+        "description": "Optionally configure a boiler entity and geofencing persons.",
         "data": {
           "boiler_entity": "Boiler / receiver entity",
           "person_entities": "People to track for geofencing"
         },
         "data_description": {
-          "boiler_entity": "Turned on/off based on TRV heat demand.",
-          "person_entities": "When all leave home, frost protection activates automatically."
+          "boiler_entity": "Turned on or off based on TRV heat demand. Supports climate, switch, and input_boolean.",
+          "person_entities": "When all selected people leave home, frost protection activates automatically."
         }
       }
     }
